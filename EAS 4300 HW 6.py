@@ -28,7 +28,7 @@
 import math
 import matplotlib.pyplot as plt
 
-def Velocity(M,Gamma,T):
+def Velocity(M,Gamma,T,R):
     u = M*math.sqrt(Gamma*R*T)
     return u
 def m_flow(density,u,A):
@@ -44,7 +44,7 @@ def rho(P, R, T):
     density = P/(R*T)
     return density
 def F_Cp(To_amb, To_max, h_c, Cp, Fst):
-    F = ((To_max/To_amb)-1)/((h_c/(Cp*To_amb))-(To_max/To_amb))
+    F = ((To_max/To_amb)-1)/(((h_c)/(Cp*To_amb))-(To_max/To_amb))
     if F>Fst:
         F = Fst
     return F
@@ -83,22 +83,27 @@ To_maxlist = []
 nthlist = []
 nplist = []
 nolist = []
+Flist = []
+Cplist = []
+Tamblist = []
+Toamblist = []
+Texitlist = []
 
 
 # Get the range of Mach numbers to iterate the program through
 start = int(raw_input('Please enter starting Mach Number: '))
 end = int(raw_input('Please enter ending Mach Number: '))
-
+# Calculate needed values based on given values
 for M in range (start,end+1):
     To_max = 2600
     mach = str(M)
     print ('Mach Number = ' + mach)
-    u_inlet = Velocity(M,Gamma,T_amb)
+    u_inlet = Velocity(M,Gamma,T_amb,R)
     inletVel = str(u_inlet)
     print('Inlet Velocity = ' + inletVel + ' m/s')
     T_exit = TfromTo(To_max,Gamma,M)
     density_exit = rho(P_exit,R,T_exit)
-    u_exit = Velocity(M, Gamma, T_exit)
+    u_exit = Velocity(M, Gamma, T_exit, R)
     m_exit = m_flow(density_exit,u_exit,A_exit)
     To_amb = TofromT(T_amb, Gamma, M)
     Cp = calcCp(Gamma, R)
@@ -120,4 +125,93 @@ for M in range (start,end+1):
     nthlist.append(nth)
     nplist.append(np)
     nolist.append(no)
-    
+    Cplist.append(Cp)
+    Flist.append(F)
+    Tamblist.append(T_amb)
+    Toamblist.append(To_amb)
+    Texitlist.append(T_exit)
+
+#Now to plot these values!
+plt.figure(1)
+plt.figure(1).subplots_adjust(hspace=0.35)
+plt.subplot(211)
+plt.plot(Mlist, Ilist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('Specific Thrust, I')
+plt.title('Specific Thrust vs Mach Number')
+
+plt.figure(1)
+plt.subplot(212)
+plt.plot(Mlist, TSFClist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('TSFC')
+plt.title('TSFC vs Mach Number')
+
+plt.figure(2)
+plt.figure(2).subplots_adjust(hspace=0.35)
+plt.subplot(211)
+plt.plot(Mlist, Flist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('F')
+plt.title('F vs Mach Number')
+
+plt.figure(2)
+plt.subplot(212)
+plt.plot(Mlist, Cplist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('Cp')
+plt.title('Cp vs Mach Number')
+
+plt.figure(3)
+plt.figure(3).subplots_adjust(hspace=0.6)
+plt.subplot(311)
+plt.plot(Mlist, nthlist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('nth')
+plt.title('nth vs Mach Number')
+
+plt.figure(3)
+plt.subplot(312)
+plt.plot(Mlist, nplist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('np')
+plt.title('np vs Mach Number')
+
+plt.figure(3)
+plt.subplot(313)
+plt.plot(Mlist, nolist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('no')
+plt.title('no vs Mach Number')
+
+plt.figure(4)
+plt.figure(4).subplots_adjust(hspace=0.35)
+plt.figure(4).subplots_adjust(wspace=0.30)
+plt.subplot(221)
+plt.plot(Mlist, To_maxlist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('To_max')
+plt.title('To_max vs Mach Number')
+
+plt.figure(4)
+plt.subplot(222)
+plt.plot(Mlist, Tamblist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('T_ambient')
+plt.title('T_ambient vs Mach Number')
+
+plt.figure(4)
+plt.subplot(223)
+plt.plot(Mlist, Toamblist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('To_ambient')
+plt.title('To_ambient vs Mach Number')
+
+plt.figure(4)
+plt.subplot(224)
+plt.plot(Mlist, Texitlist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('T_exit')
+plt.title('T_exit vs Mach Number')
+
+plt.show()
