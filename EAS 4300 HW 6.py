@@ -65,6 +65,7 @@ def propeffic(u_in,u_out):
     return np
 def thermeffic(u_in, u_out, To_amb, To_max, Cp):
     nth = (.5*((u_out**2)-(u_in**2)))/(Cp*(To_max-To_amb))
+    return nth
 
 Gamma = 1.4
 R = 287
@@ -98,11 +99,11 @@ for M in range (start,end+1):
     T_exit = TfromTo(To_max,Gamma,M)
     density_exit = rho(P_exit,R,T_exit)
     u_exit = Velocity(M, Gamma, T_exit)
-    m_exit = m_flow(density_exit,u_exit,A)
+    m_exit = m_flow(density_exit,u_exit,A_exit)
     To_amb = TofromT(T_amb, Gamma, M)
     Cp = calcCp(Gamma, R)
     F = F_Cp(To_amb, To_max, h_c, Cp, Fst)
-    if F = Fst:
+    if F == Fst:
         To_max = calcTo_max(To_amb, h_c, F, Cp)
     m_amb = m_spec(m_exit,F)
     thrust = calcThrust(m_amb, F, u_inlet, u_exit)
