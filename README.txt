@@ -1,0 +1,3 @@
+-Still need to adjust parameters to given
+-Change graphs to only those needed for assignment
+-Figure area ratio shit
