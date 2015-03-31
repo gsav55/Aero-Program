@@ -27,6 +27,7 @@
 
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
 def Velocity(M,Gamma,T,R):
     u = M*math.sqrt(Gamma*R*T)
@@ -41,15 +42,15 @@ def TofromT(T, Gamma, M):
     To = T*(1+((Gamma-1)/2)*M**2)
     return To
 def rho(P, R, T):
-    density = P/(R*T)
+    density = P/(R*.001*T)
     return density
-def F_Cp(To_amb, To_max, h_c, Cp, Fst):
-    F = ((To_max/To_amb)-1)/(((h_c)/(Cp*To_amb))-(To_max/To_amb))
+def FfromCp(To_amb, To_max, h_c, Cp, Fst):
+    F = ((To_max/To_amb)-1)/(((h_c)/(Cp*0.001*To_amb))-(To_max/To_amb))
     if F>Fst:
         F = Fst
     return F
-def calcCp(G,R):
-    Cp = (G/(G-1))*R
+def calcCp(Gamma,R):
+    Cp = (Gamma/(Gamma-1))*R
     return Cp
 def m_spec(m_e, F):
     m_a = m_e/(1+F)
@@ -58,7 +59,7 @@ def calcThrust(m_amb, F, u_in, u_out):
     thrust = m_amb*((1+F)*u_out-u_in)
     return thrust
 def calcTo_max (T_amb,h_c,F,Cp):
-    To_max = (h_c*F - Cp*T_amb)/(Cp*F + Cp)
+    To_max = (h_c*F - Cp*0.001*T_amb)/(Cp*0.001*F + Cp*0.001)
     return To_max
 def propeffic(u_in,u_out):
     np = (2*(u_in/u_out))/(1+(u_in/u_out))
@@ -67,10 +68,9 @@ def thermeffic(u_in, u_out, To_amb, To_max, Cp):
     nth = (.5*((u_out**2)-(u_in**2)))/(Cp*(To_max-To_amb))
     return nth
 
-Gamma = 1.4
 R = 287
 A_exit = 1 # m^2
-P_amb = 26500
+P_amb = 26.500
 T_amb = 223
 P_exit = P_amb
 h_c = 43000
@@ -91,25 +91,27 @@ Texitlist = []
 
 
 # Get the range of Mach numbers to iterate the program through
-start = int(raw_input('Please enter starting Mach Number: '))
-end = int(raw_input('Please enter ending Mach Number: '))
+start = float(raw_input('Please enter starting Mach Number: '))
+end = float(raw_input('Please enter ending Mach Number: '))
 # Calculate needed values based on given values
-for M in range (start,end+1):
+for M in np.arange(start,end,0.01):
     To_max = 2600
-    mach = str(M)
-    print ('Mach Number = ' + mach)
-    u_inlet = Velocity(M,Gamma,T_amb,R)
-    inletVel = str(u_inlet)
-    print('Inlet Velocity = ' + inletVel + ' m/s')
-    T_exit = TfromTo(To_max,Gamma,M)
+    Gamma = 1.40
+    To_amb = TofromT(T_amb, Gamma, M)
+#    mach = str(M)
+#    print ('Mach Number = ' + mach)
+    u_inlet = Velocity(M, Gamma, T_amb, R)
+#    inletVel = str(u_inlet)
+#    print('Inlet Velocity = ' + inletVel + ' m/s')
+    Gamma = 1.33
+    Cp = calcCp(Gamma, R)
+    F = FfromCp(To_amb, To_max, h_c, Cp, Fst)
+    if F == Fst:
+        To_max = calcTo_max(To_amb, h_c, F, Cp)
+    T_exit = TfromTo(To_max, Gamma,M)
     density_exit = rho(P_exit,R,T_exit)
     u_exit = Velocity(M, Gamma, T_exit, R)
     m_exit = m_flow(density_exit,u_exit,A_exit)
-    To_amb = TofromT(T_amb, Gamma, M)
-    Cp = calcCp(Gamma, R)
-    F = F_Cp(To_amb, To_max, h_c, Cp, Fst)
-    if F == Fst:
-        To_max = calcTo_max(To_amb, h_c, F, Cp)
     m_amb = m_spec(m_exit,F)
     thrust = calcThrust(m_amb, F, u_inlet, u_exit)
     I = thrust/m_amb
