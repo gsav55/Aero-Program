@@ -90,11 +90,12 @@ for M in np.arange(start,end,0.01):
     density_exit = rho(P_exit,R,T_exit)
     u_exit = Velocity(M, Gamma, T_exit, R)
     A_ratio = arearatio(M)
-    m_exit = m_flow(density_exit,u_exit,A_ratio)
-    m_amb = m_spec(m_exit,F)
-    thrust = calcThrust(m_amb, F, u_inlet, u_exit)
-    I = thrust/m_amb
-    TSFC = (F*m_amb)/thrust
+#    m_exit = m_flow(density_exit,u_exit,A_ratio)
+#    m_amb = m_spec(m_exit,F)
+#    thrust = calcThrust(m_amb, F, u_inlet, u_exit)
+#    I = thrust/m_amb
+    I =(1+F)*u_exit-u_inlet
+    TSFC = F/((1+F)*u_exit-u_inlet)
     np = propeffic(u_inlet, u_exit, F, h_c)
     nth = thermeffic(u_inlet, u_exit, To_max, To_amb)
     no = np*nth
@@ -166,5 +167,12 @@ plt.plot(Mlist, A_ratiolist)
 plt.xlabel('Mach Number, M')
 plt.ylabel('A/A*')
 plt.title('A/A* vs Mach Number')
+
+plt.figure(5)
+plt.subplot(111)
+plt.plot(Mlist, Flist)
+plt.xlabel('Mach Number, M')
+plt.ylabel('F')
+plt.title('F vs Mach Number')
 
 plt.show()
