@@ -17,20 +17,20 @@ Gamma = 1.4
 R = 287
 Cp = 1.005
 
-Ilist = []
-TSFClist = []
-rnlist = []
-nblist = []
-dIlist = []
-dTSFClist = []
-drnlist = []
-dnblist = []
-
-def deriv(list):
-    if len(list)>2:
-        del list[0]
-    if len(list)==2:
-        return list[0]-list[1]
+Mlist = np.array([])
+Ilist = np.array([])
+TSFClist = np.array([])
+rnlist = np.array([])
+nblist = np.array([])
+dIlist = np.array([])
+dTSFClist = np.array([])
+drnlist = np.array([])
+dnblist = np.array([])
+Mlist = np.array([])
+invIlist = np.array([])
+invTSFClist = np.array([])
+invrnlist = np.array([])
+invnblist = np.array([])
 
 for M in np.arange(1,6,0.01):
     To_max = 2540
@@ -48,20 +48,44 @@ for M in np.arange(1,6,0.01):
     P6 = P_amb
     Po6 = P6*(1+((Gamma-1)/2)*M**2)
     Po4 = Po6
-    rn = (Po6/Po4)
-    nb = To4-To2
-#    np = (2*(u_in/u_out))/(1+(u_in/u_out))
-#    nth = ((u_out**2)-(u_in**2))/(2*Cp*(To_max-To_amb))
+    rn = (Po6/Po4) #always = 1 because ideal
+    nb = 1-(To2/To4)
 
-    Ilist.append(I)
-    TSFClist.append(TSFC)
-    rnlist.append(rn)
-    nblist.append(nb)
+    Ilist=np.append(Ilist,I)
+    TSFClist=np.append(TSFClist,TSFC)
+    rnlist=np.append(rnlist,-0.01)
+    nblist=np.append(nblist,nb)
+    Mlist=np.append(Mlist,M)    
 
-    if len(Ilist)>1:
-        dIlist.append(deriv(Ilist))
-        dTSFClist.append(deriv(TSFClist))
-        drnlist.append(deriv(rnlist))
-        dnblist.append(deriv(nblist))
-
+# Now to produce gradients and desired maps 
+plot1 = (1/Ilist)*(np.gradient(Ilist)/np.gradient(nblist))
+plot2 = (1/Ilist)*(np.gradient(Ilist)/rnlist)
+plot3 = (1/TSFClist)*(np.gradient(TSFClist)/np.gradient(nblist))
+plot4 = (1/TSFClist)*(np.gradient(TSFClist)/rnlist)
         
+# Now to plot everything!
+plt.figure(1)
+plt.plot(Mlist, plot1)
+plt.xlabel('Mach Number, M')
+plt.ylabel('1/I * d(I)/d(nb)')
+plt.title('1/I * d(I)/d(nb) vs Mach Number')
+
+plt.figure(2)
+plt.plot(Mlist, plot2)
+plt.xlabel('Mach Number, M')
+plt.ylabel('1/I * d(I)/d(rn)')
+plt.title('1/I * d(I)/d(rn) vs Mach Number')
+
+plt.figure(3)
+plt.plot(Mlist, plot3)
+plt.xlabel('Mach Number, M')
+plt.ylabel('1/TSFC * d(TSFC)/d(nb)')
+plt.title('1/TSFC * d(TSFC)/d(nb) vs Mach Number')
+
+plt.figure(4)
+plt.plot(Mlist, plot4)
+plt.xlabel('Mach Number, M')
+plt.ylabel('1/TSFC * d(TSFC)/d(rn)')
+plt.title('1/TSFC * d(TSFC)/d(rn) vs Mach Number')
+
+plt.show()
