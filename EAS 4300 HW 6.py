@@ -76,7 +76,7 @@ def arearatio(M): #I used Gamma = 1.33 just to simplify trying to type this equa
 # Given values that won't change in the main loop
 R = 287
 P_amb = 26.500
-T_amb = 223
+T_amb = 223.252
 P_exit = P_amb
 h_c = 43000
 Fst = 0.06

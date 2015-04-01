@@ -1,6 +1,7 @@
 -Still need to adjust parameters to given
->>Look in Appendix at the back of the book
+>>Done.
 -Change graphs to only those needed for assignment
 >>Done.
 -Figure area ratio shit
 >>Done.
+-Adjust scale of graphs so that line shows up at the top
