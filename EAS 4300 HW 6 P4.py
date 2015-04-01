@@ -15,20 +15,53 @@ P_amb = 8.5
 T_amb = 220
 Gamma = 1.4
 R = 287
+Cp = 1.005
+
+Ilist = []
+TSFClist = []
+rnlist = []
+nblist = []
+dIlist = []
+dTSFClist = []
+drnlist = []
+dnblist = []
+
+def deriv(list):
+    if len(list)>2:
+        del list[0]
+    if len(list)==2:
+        return list[0]-list[1]
 
 for M in np.arange(1,6,0.01):
     To_max = 2540
-
+    To4 = To_max
+    
     To2 = T_amb*(1+((Gamma-1)/2)*M)
     T_exit = (T_amb/To2)*To_max
 
-    U_exit = M*math.sqrt(Gamma*R*T_exit)
-    U_in = M*math.sqrt(Gamma*R*T_amb)
+    u_exit = M*math.sqrt(Gamma*R*T_exit)
+    u_in = M*math.sqrt(Gamma*R*T_amb)
 
-    np = (2*(u_in/u_out))/(1+(u_in/u_out))
-    nth = ((u_out**2)-(u_in**2))/(2*Cp*(To_max-To_amb))
+    I = u_exit-u_in
+    TSFC = 1/I
 
-    rho_exit = P_amb/(R*.001*To_max)
-    A_ratio = (1/M)*((2/2.4)*(1+(0.4/2)*M**2))**(2.4/0.8)
-    m_exit = rho_exit*U_exit*A_ratio
-    m_a = m_exit*F
+    P6 = P_amb
+    Po6 = P6*(1+((Gamma-1)/2)*M**2)
+    Po4 = Po6
+    rn = (Po6/Po4)
+    nb = To4-To2
+#    np = (2*(u_in/u_out))/(1+(u_in/u_out))
+#    nth = ((u_out**2)-(u_in**2))/(2*Cp*(To_max-To_amb))
+
+    Ilist.append(I)
+    TSFClist.append(TSFC)
+    rnlist.append(rn)
+    nblist.append(nb)
+
+    if len(Ilist)>1:
+        dIlist.append(deriv(Ilist))
+        dTSFClist.append(deriv(TSFClist))
+        drnlist.append(deriv(rnlist))
+        dnblist.append(deriv(nblist))
+
+        
