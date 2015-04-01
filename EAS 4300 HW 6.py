@@ -29,6 +29,14 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Given values that won't change in the main loop
+R = 287
+P_amb = 26.500
+T_amb = 223.252
+P_exit = P_amb
+h_c = 43000
+Fst = 0.06
+
 def Velocity(M,Gamma,T,R):
     u = M*math.sqrt(Gamma*R*T)
     return u
@@ -73,14 +81,6 @@ def arearatio(M): #I used Gamma = 1.33 just to simplify trying to type this equa
     A_ratio = (1/M)*((2/2.33)*(1+(0.33/2)*M**2))**(2.33/0.66)
     return A_ratio
 
-# Given values that won't change in the main loop
-R = 287
-P_amb = 26.500
-T_amb = 223.252
-P_exit = P_amb
-h_c = 43000
-Fst = 0.06
-
 # Initialize the empty lists that will hold our graph data
 Mlist = []
 Ilist = []
@@ -95,7 +95,6 @@ Tamblist = []
 Toamblist = []
 Texitlist = []
 A_ratiolist = [] 
-
 
 # Get the range of Mach numbers to iterate the program through
 start = float(raw_input('Please enter starting Mach Number: '))
