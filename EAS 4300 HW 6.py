@@ -40,8 +40,8 @@ def m_spec(m_e, F):
 def calcThrust(m_amb, F, u_in, u_out):
     thrust = m_amb*((1+F)*u_out-u_in)
     return thrust
-def calcTo_max (T_amb,h_c,F,Cp):
-    To_max = (h_c*F - Cp*0.001*T_amb)/(Cp*0.001*F + Cp*0.001)
+def calcTo_max (To_amb,h_c,F,Cp):
+    To_max = (F*((h_c/(Cp*0.001))+To_amb))/(1+F)
     return To_max
 def propeffic(u_in, u_out, F, h_c):
     np = (2*(u_in/u_out))/(1+(u_in/u_out))

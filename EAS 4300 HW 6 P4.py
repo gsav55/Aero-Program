@@ -21,16 +21,7 @@ Mlist = np.array([])
 Ilist = np.array([])
 TSFClist = np.array([])
 rnlist = np.array([])
-nblist = np.array([])
-dIlist = np.array([])
-dTSFClist = np.array([])
-drnlist = np.array([])
-dnblist = np.array([])
-Mlist = np.array([])
-invIlist = np.array([])
-invTSFClist = np.array([])
-invrnlist = np.array([])
-invnblist = np.array([])
+nblist = np.array([1])
 
 for M in np.arange(1,6,0.01):
     To_max = 2540
@@ -48,13 +39,13 @@ for M in np.arange(1,6,0.01):
     P6 = P_amb
     Po6 = P6*(1+((Gamma-1)/2)*M**2)
     Po4 = Po6
-    rn = (Po6/Po4) #always = 1 because ideal
-    nb = 1-(To2/To4)
+#    rn = (Po6/Po4) #always = 1 because ideal
+#    nb = 1-(To2/To4)
 
     Ilist=np.append(Ilist,I)
     TSFClist=np.append(TSFClist,TSFC)
     rnlist=np.append(rnlist,-0.01)
-    nblist=np.append(nblist,nb)
+    nblist=np.append(nblist,-0.01)
     Mlist=np.append(Mlist,M)    
 
 # Now to produce gradients and desired maps 
