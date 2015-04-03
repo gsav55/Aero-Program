@@ -21,26 +21,20 @@ Mlist = np.array([])
 Ilist = np.array([])
 TSFClist = np.array([])
 rnlist = np.array([])
-nblist = np.array([1])
+nblist = np.array([])
 
 for M in np.arange(1,6,0.01):
     To_max = 2540
     To4 = To_max
     
-    To2 = T_amb*(1+((Gamma-1)/2)*M)
-    T_exit = (T_amb/To2)*To_max
+    To2 = T_amb*(1+((Gamma-1)/2)*M**2)
+    T6 = To_max/(1+((Gamma-1)/2)*M**2)
 
-    u_exit = M*math.sqrt(Gamma*R*T_exit)
+    u_exit = M*math.sqrt(Gamma*R*T6)
     u_in = M*math.sqrt(Gamma*R*T_amb)
 
     I = u_exit-u_in
     TSFC = 1/I
-
-    P6 = P_amb
-    Po6 = P6*(1+((Gamma-1)/2)*M**2)
-    Po4 = Po6
-#    rn = (Po6/Po4) #always = 1 because ideal
-#    nb = 1-(To2/To4)
 
     Ilist=np.append(Ilist,I)
     TSFClist=np.append(TSFClist,TSFC)
@@ -49,10 +43,14 @@ for M in np.arange(1,6,0.01):
     Mlist=np.append(Mlist,M)    
 
 # Now to produce gradients and desired maps 
-plot1 = (1/Ilist)*(np.gradient(Ilist)/np.gradient(nblist))
+plot1 = (1/Ilist)*(np.gradient(Ilist)/nblist)
 plot2 = (1/Ilist)*(np.gradient(Ilist)/rnlist)
-plot3 = (1/TSFClist)*(np.gradient(TSFClist)/np.gradient(nblist))
+plot3 = (1/TSFClist)*(np.gradient(TSFClist)/nblist)
 plot4 = (1/TSFClist)*(np.gradient(TSFClist)/rnlist)
+plot5 = (np.gradient(Ilist)/nblist)
+plot6 = (np.gradient(Ilist)/rnlist)
+plot7 = (np.gradient(TSFClist)/nblist)
+plot8 = (np.gradient(TSFClist)/rnlist)
         
 # Now to plot everything!
 plt.figure(1)
@@ -78,5 +76,29 @@ plt.plot(Mlist, plot4)
 plt.xlabel('Mach Number, M')
 plt.ylabel('1/TSFC * d(TSFC)/d(rn)')
 plt.title('1/TSFC * d(TSFC)/d(rn) vs Mach Number')
+
+plt.figure(5)
+plt.plot(Mlist, plot5)
+plt.xlabel('Mach Number, M')
+plt.ylabel('d(I)/d(nb)')
+plt.title('d(I)/d(nb) vs Mach Number')
+
+plt.figure(6)
+plt.plot(Mlist, plot6)
+plt.xlabel('Mach Number, M')
+plt.ylabel('d(I)/d(rn)')
+plt.title('d(I)/d(rn) vs Mach Number')
+
+plt.figure(7)
+plt.plot(Mlist, plot7)
+plt.xlabel('Mach Number, M')
+plt.ylabel('d(TSFC)/d(nb)')
+plt.title('d(TSFC)/d(nb) vs Mach Number')
+
+plt.figure(8)
+plt.plot(Mlist, plot8)
+plt.xlabel('Mach Number, M')
+plt.ylabel('d(TSFC)/d(rn)')
+plt.title('d(TSFC)/d(rn) vs Mach Number')
 
 plt.show()
